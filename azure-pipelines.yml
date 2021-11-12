@@ -43,8 +43,9 @@ steps:
     githubConnection: krack-labs2
     repositoryName: krack-labs/WebGoat.NET
     action: 'create'
-    tagSource: 'auto'
-    assets: '$Build.ArtifactStagingDirectory//$(Build.BuildId).zip'
+    tagSource: 'manual'
+    tag: '1.0'
+    assets: '$(Build.ArtifactStagingDirectory)//$(Build.BuildId).zip'
     assetUploadMode: delete
 
 - task: VSTest@2
