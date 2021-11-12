@@ -33,7 +33,7 @@ steps:
     rootFolderOrFile: '$(Build.BinariesDirectory'
     IncludeRootFolder: true
     archiveType: zip
-    archiveFile: '($Build.ArtifactStagingDirectory/$(Build.BuildId).zip'
+    archiveFile: '($Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
     replaceExistingArchive: true
     verbose: true
 
@@ -44,7 +44,7 @@ steps:
     repositoryName: krack-labs/WebGoat.NET
     tagSource: manual
     tag: $(Build:BuildNumber)
-    assets: '($Build.ArtifactStagingDirectory/$(Build.BuildId).zip)'
+    assets: '($Build.ArtifactStagingDirectory)/$(Build.BuildId).zip)'
 
 - task: VSTest@2
   inputs:
