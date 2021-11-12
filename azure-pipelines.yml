@@ -43,7 +43,7 @@ steps:
     githubConnection: krack-labs2
     repositoryName: krack-labs/WebGoat.NET
     action: 'create'
-    tagSource: 'gitTag'
+    tagSource: 'auto'
     assets: '$Build.ArtifactStagingDirectory//$(Build.BuildId).zip'
     assetUploadMode: delete
 
