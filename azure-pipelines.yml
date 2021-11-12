@@ -40,7 +40,7 @@ steps:
 - task: GithubRelease@0
   displayName: ‘Create GitHub Release’
   inputs:
-    githubConnection: krack-labs
+    githubConnection: krack-labs2
     repositoryName: krack-labs/WebGoat.NET
     tagSource: manual
     tag: $(Build:BuildNumber)
