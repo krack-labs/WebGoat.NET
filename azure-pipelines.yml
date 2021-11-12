@@ -48,6 +48,15 @@ steps:
     assets: '$(Build.ArtifactStagingDirectory)\bin.zip'
     assetUploadMode: delete
 
+- task: Veracode@3
+  inputs:
+    ConnectionDetailsSelection: 'Endpoint'
+    AnalysisService: 'veracode_scan'
+    veracodeAppProfile: 'DNN'
+    version: '$(build.buildNumber)'
+    filepath: '$(build.artifactstagingdirectory)'
+    maximumWaitTime: '360'
+
 - task: VSTest@2
   inputs:
     platform: '$(buildPlatform)'
