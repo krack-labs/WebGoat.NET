@@ -46,7 +46,7 @@ steps:
     tagSource: manual
     tag: '1.0'
     assets: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip)'
-    assetUploadMode: replace
+    assetUploadMode: delete
 
 - task: VSTest@2
   inputs:
