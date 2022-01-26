@@ -52,7 +52,7 @@ steps:
   inputs:
     ConnectionDetailsSelection: 'Endpoint'
     AnalysisService: 'veracode_scan'
-    veracodeAppProfile: 'DNN'
+    veracodeAppProfile: 'WebGoat.net'
     version: '$(build.buildNumber)'
     filepath: '$(build.artifactstagingdirectory)'
     maximumWaitTime: '360'
