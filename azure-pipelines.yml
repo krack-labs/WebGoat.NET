@@ -37,6 +37,27 @@ steps:
     replaceExistingArchive: true
     verbose: true
 
+- task: Veracode@3
+  inputs:
+    ConnectionDetailsSelection: 'Endpoint'
+    AnalysisService: 'veracode_scan'
+    veracodeAppProfile: 'WebGoat.net'
+    version: '$(build.buildNumber)'
+    filepath: '$(build.artifactstagingdirectory)'
+    importResults: true
+    maximumWaitTime: '360'
+
+- task: Veracode Flaw Importer@3
+  inputs:
+    ConnectionDetailsSelection: 'Endpoint'
+    AnalysisService: 'veracode_scan'
+    veracodeAppProfile: 'WebGoat.net'
+    sandboxName: 
+    importType: 'All Unmitigated Flaws Violating Policy'
+    workItemType: 'Bug'
+    area: '$(system.teamProject)'
+    flawImportLimit: '1000'
+
 - task: GithubRelease@0
   displayName: ‘Create GitHub Release’
   inputs:
@@ -47,15 +68,6 @@ steps:
     tag: '$(Build.BuildNumber)'
     assets: '$(Build.ArtifactStagingDirectory)\bin.zip'
     assetUploadMode: delete
-
-- task: Veracode@3
-  inputs:
-    ConnectionDetailsSelection: 'Endpoint'
-    AnalysisService: 'veracode_scan'
-    veracodeAppProfile: 'WebGoat.net'
-    version: '$(build.buildNumber)'
-    filepath: '$(build.artifactstagingdirectory)'
-    maximumWaitTime: '360'
 
 - task: VSTest@2
   inputs:
