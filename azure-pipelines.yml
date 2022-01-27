@@ -53,7 +53,7 @@ steps:
     AnalysisService: 'veracode_scan'
     veracodeAppProfile: 'WebGoat.net'
     sandboxName: 
-    importType: 'All Flaws'
+    importType: 'All Unmitigated Flaws Violating Policy'
     workItemType: 'Issue'
     area: '$(system.teamProject)'
     flawImportLimit: '1000'
