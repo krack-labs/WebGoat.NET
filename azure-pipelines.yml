@@ -61,8 +61,8 @@ steps:
 - task: GithubRelease@0
   displayName: ‘Create GitHub Release’
   inputs:
-    githubConnection: krack-labs2
-    repositoryName: krack-labs/WebGoat.NET
+    githubConnection: wasptree
+    repositoryName: wasptree/WebGoat.NET
     action: 'create'
     tagSource: 'manual'
     tag: '$(Build.BuildNumber)'
