@@ -43,7 +43,7 @@ steps:
     AnalysisService: 'veracode_scan'
     veracodeAppProfile: 'WebGoat.net'
     version: '$(build.buildNumber)'
-    filepath: '$(build.artifactstagingdirectory)'
+    filepath: '$(build.artifactstagingdirectory)/bin.zip'
     importResults: true
     maximumWaitTime: '360'
 
