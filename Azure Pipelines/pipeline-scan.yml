@@ -1,0 +1,60 @@
+# -- WebGoat.NET Vulnerable .net application --
+#
+# Example Veracode Pipeline Scan in Azure Devops
+# The pipeline will perform SCA + SAST Pipeline scanning on Feature Branch
+# This pipeline makes use of the Veracode Pipeline scan Community Plugin : https://github.com/julz0815/ADO-Veracode-Pipeline-Scan-Plugin
+# Scan Results and Findings are displayed in the Pipeline Workflow
+
+trigger:
+  branches:
+    include:
+    - feature/*
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Debug'
+
+steps:
+- task: NuGetToolInstaller@1
+
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'
+
+- task: VSBuild@1
+  inputs:
+    solution: '$(solution)'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(Build.SourcesDirectory)/WebGoat/bin'
+    IncludeRootFolder: true
+    archiveType: zip
+    archiveFile: '$(Build.ArtifactStagingDirectory)/bin.zip'
+    replaceExistingArchive: true
+    verbose: true
+
+- task: PowerShell@2
+  displayName: Veracode SCA 
+  env: {SRCCLR_API_TOKEN: $(SRCCLR_API_TOKEN)}
+  inputs:
+    targetType: 'inline'
+    script: |
+      Set-ExecutionPolicy AllSigned -Scope Process -Force
+      iex ((New-Object System.Net.WebClient).DownloadString('https://download.srcclr.com/ci.ps1'))
+      srcclr scan $(Build.SourcesDirectory)
+
+- task: VeracodePipelineScan@0
+  displayName: 'Veracode Pipeline Scan'
+  inputs:
+    VeracodeAPIID: '${VERACODE_API_ID}'
+    VeracodeAPIsecret: '${VERACODE_API_SECRET}'
+    fileToScan: '$(Build.ArtifactStagingDirectory)/bin.zip'
+    breakPipeline: false
