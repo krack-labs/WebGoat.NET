@@ -46,12 +46,13 @@ steps:
     filepath: '$(build.artifactstagingdirectory)/bin.zip'
     importResults: true
     maximumWaitTime: '360'
+  condition: false
 
 - task: Veracode Flaw Importer@3
   inputs:
     ConnectionDetailsSelection: 'Endpoint'
     AnalysisService: 'veracode_scan'
-    veracodeAppProfile: 'WebGoat.net'
+    veracodeAppProfile: 'vulnado'
     sandboxName: 
     importType: 'All Unmitigated Flaws Violating Policy'
     workItemType: 'Issue'
@@ -68,6 +69,7 @@ steps:
     tag: '$(Build.BuildNumber)'
     assets: '$(Build.ArtifactStagingDirectory)\bin.zip'
     assetUploadMode: delete
+  condition: false
 
 - task: VSTest@2
   inputs:
