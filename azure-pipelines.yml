@@ -1,10 +1,12 @@
-# ASP.NET
-# Build and test ASP.NET projects.
-# Add steps that publish symbols, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+# -- WebGoat.NET Vulnerable .net application --
+#
+# Example Veracode Scan in Azure Pipelines
+# The pipeline will perform SCA + SAST Policy Scan on the Main branch
+# Scan Results and Findings are imported into Azure DevOps Boards
 
 trigger:
-- master
+  branches:
+    include: [main]
 
 pool:
   vmImage: 'windows-latest'
@@ -37,7 +39,21 @@ steps:
     replaceExistingArchive: true
     verbose: true
 
+- task: PowerShell@2
+  displayName: Veracode SCA 
+  env: {SRCCLR_API_TOKEN: $(SRCCLR_API_TOKEN)}
+  inputs:
+    targetType: 'inline'
+    script: |
+      # To allow external apps and scripts to be ran.
+      Set-ExecutionPolicy AllSigned -Scope Process -Force
+      # Download and Execute the downloaded powershell script
+      iex ((New-Object System.Net.WebClient).DownloadString('https://download.srcclr.com/ci.ps1'))
+      # Use predefined azure pipeline variable Build.SourcesDirectory to locate your repository
+      srcclr scan $(Build.SourcesDirectory)
+
 - task: Veracode@3
+  displayName: Veracode Policy Scan
   inputs:
     ConnectionDetailsSelection: 'Endpoint'
     AnalysisService: 'veracode_scan'
@@ -48,6 +64,7 @@ steps:
     maximumWaitTime: '360'
 
 - task: Veracode Flaw Importer@3
+  displayName: Veracode Import Scan Findings
   inputs:
     ConnectionDetailsSelection: 'Endpoint'
     AnalysisService: 'veracode_scan'
