@@ -50,11 +50,10 @@ steps:
       Set-ExecutionPolicy AllSigned -Scope Process -Force
       iex ((New-Object System.Net.WebClient).DownloadString('https://download.srcclr.com/ci.ps1'))
       srcclr scan $(Build.SourcesDirectory)
+  condition: false
 
 - task: VeracodePipelineScan@0
-  displayName: 'Veracode Pipeline Scan'
   inputs:
     VeracodeAPIID: '${VERACODE_API_ID}'
     VeracodeAPIsecret: '${VERACODE_API_SECRET}'
     fileToScan: '$(Build.ArtifactStagingDirectory)/bin.zip'
-    breakPipeline: false
