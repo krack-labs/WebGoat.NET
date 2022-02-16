@@ -54,6 +54,6 @@ steps:
 
 - task: VeracodePipelineScan@0
   inputs:
-    VeracodeAPIID: '${VERACODE_API_ID}'
-    VeracodeAPIsecret: '${VERACODE_API_SECRET}'
+    VeracodeAPIID: '$(VERACODE_API_ID)'
+    VeracodeAPIsecret: '$(VERACODE_API_SECRET)'
     fileToScan: '$(Build.ArtifactStagingDirectory)/bin.zip'
