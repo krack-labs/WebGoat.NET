@@ -56,6 +56,6 @@ steps:
   displayName: 'Veracode Pipeline Scan'
   inputs:
     VeracodeAPIID: '$(VERACODE_API_ID)'
-    VeracodeAPIsecret: '"$(VERACODE_API_SECRET)"'
+    VeracodeAPIsecret: '$(VERACODE_API_SECRET)'
     fileToScan: '$(Build.ArtifactStagingDirectory)/bin.zip'
     breakPipeline: false
