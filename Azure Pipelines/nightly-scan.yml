@@ -9,7 +9,7 @@ schedules:
   displayName: Nightly Veracode Security Scan
   branches:
     include:
-    - feature/*
+    - features/*
   always: true
 
 pool:
