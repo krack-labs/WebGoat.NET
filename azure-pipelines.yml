@@ -57,7 +57,7 @@ steps:
     veracodeAppProfile: 'WebGoat.test'
     version: '$(build.buildNumber)'
     filepath: '$(build.artifactstagingdirectory)/bin.zip'
-    optargs: '-business_criticality low'
+    optargs: 'business_criticality="Low"'
     createProfile: true
     importResults: true
     maximumWaitTime: '360'
