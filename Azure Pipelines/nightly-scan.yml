@@ -64,3 +64,4 @@ steps:
     sandboxName: 'Nightly Scan'
     importResults: true
     maximumWaitTime: '360'
+    optargs: "-include DotNetGoat*,*DTE*"
