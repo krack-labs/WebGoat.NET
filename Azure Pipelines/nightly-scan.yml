@@ -52,6 +52,7 @@ steps:
       Set-ExecutionPolicy AllSigned -Scope Process -Force
       iex ((New-Object System.Net.WebClient).DownloadString('https://download.srcclr.com/ci.ps1'))
       srcclr scan $(Build.SourcesDirectory)
+  condition: False
 
 - task: Veracode@3
   displayName: Veracode Sandbox Scan
