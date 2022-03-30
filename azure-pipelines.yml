@@ -48,7 +48,6 @@ steps:
       Set-ExecutionPolicy AllSigned -Scope Process -Force
       iex ((New-Object System.Net.WebClient).DownloadString('https://download.srcclr.com/ci.ps1'))
       srcclr scan $(Build.SourcesDirectory)
-  condition: false
 
 - task: Veracode@3
   displayName: Veracode Policy Scan
@@ -58,7 +57,6 @@ steps:
     veracodeAppProfile: 'WebGoat.test'
     version: '$(build.buildNumber)'
     filepath: '$(build.artifactstagingdirectory)/bin.zip'
-    optargs: '-business_criticality=Low'
     createProfile: true
     importResults: true
     maximumWaitTime: '360'
