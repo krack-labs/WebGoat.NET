@@ -60,7 +60,7 @@ steps:
     createProfile: true
     importResults: true
     maximumWaitTime: '360'
-    optargs: "-policy \"Wasptree test Policy\""
+    optargs: "-policy Wasptree_test_Policy"
   
 - task: Veracode Flaw Importer@3
   displayName: Veracode Import Scan Findings
