@@ -58,7 +58,7 @@ steps:
     version: '$(build.buildNumber)'
     filepath: '$(build.artifactstagingdirectory)/bin.zip'
     createProfile: true
-    importResults: true
+    importResults: false
     maximumWaitTime: '360'
     optargs: "-policy Wasptree_test_Policy"
   
