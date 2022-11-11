@@ -61,7 +61,7 @@ steps:
     importResults: false
     maximumWaitTime: '360'
     failBuildOnPolicyFail: true
-    optargs: "-policy Wasptree_test_Policy"
+    optargs: "-include not-a-module"
   
 - task: Veracode Flaw Importer@3
   displayName: Veracode Import Scan Findings
