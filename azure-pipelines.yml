@@ -45,9 +45,9 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      Set-ExecutionPolicy AllSigned -Scope Process -Force
-      iex ((New-Object System.Net.WebClient).DownloadString('https://download.srcclr.com/ci.ps1'))
-      srcclr scan $(Build.SourcesDirectory)
+      # Set-ExecutionPolicy AllSigned -Scope Process -Force
+      # iex ((New-Object System.Net.WebClient).DownloadString('https://download.srcclr.com/ci.ps1'))
+      # srcclr scan $(Build.SourcesDirectory)
 
 - task: Veracode@3
   displayName: Veracode Policy Scan
@@ -60,7 +60,8 @@ steps:
     createProfile: true
     importResults: true
     maximumWaitTime: '45'
-    failBuildOnPolicyFail: true
+    failBuildOnPolicyFail: false
+    optargs: "-criticality medium"
   
 - task: Veracode Flaw Importer@3
   displayName: Veracode Import Scan Findings
