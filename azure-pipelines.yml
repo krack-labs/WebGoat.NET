@@ -60,7 +60,7 @@ steps:
     createProfile: true
     importResults: true
     maximumWaitTime: '45'
-    failBuildOnPolicyFail: false
+    failBuildOnPolicyFail: true
     optargs: '-criticality medium'
   
 - task: Veracode Flaw Importer@3
