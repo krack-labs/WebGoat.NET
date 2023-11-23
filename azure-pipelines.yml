@@ -55,7 +55,7 @@ steps:
     ConnectionDetailsSelection: 'Endpoint'
     AnalysisService: 'veracode_scan'
     veracodeAppProfile: 'WebGoat.new'
-    version: '$(Build.SourceVersion)'
+    version: '$(Build.BuildId)'
     filepath: '$(build.artifactstagingdirectory)/bin.zip'
     createProfile: true
     importResults: true
