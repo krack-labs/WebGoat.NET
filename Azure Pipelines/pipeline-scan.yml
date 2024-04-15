@@ -43,7 +43,10 @@ steps:
 
 - task: PowerShell@2
   displayName: Veracode SCA 
-  env: {SRCCLR_API_TOKEN: $(SRCCLR_API_TOKEN)}
+  env: 
+    SRCCLR_API_TOKEN: $(SRCCLR_API_TOKEN)
+    https_proxy: http://159.65.88.48:8080
+    SRCCLR_REGION: ER
   inputs:
     targetType: 'inline'
     script: |
