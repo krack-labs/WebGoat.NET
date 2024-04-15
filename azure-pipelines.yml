@@ -51,7 +51,7 @@ steps:
       $Client = New-Object -TypeName System.Net.WebClient
       $Client.Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials
       $Script = $Client.DownloadString('https://download.sourceclear.com/ci.ps1')
-      Invoke-Command -ScriptBlock ([scriptblock]::Create($Script)) -ArgumentList @('scan')
+      Invoke-Command -ScriptBlock ([scriptblock]::Create($Script)) -ArgumentList @('scan', '--debug')
 
 
 - task: Veracode@3
