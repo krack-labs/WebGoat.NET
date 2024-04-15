@@ -41,13 +41,16 @@ steps:
 
 - task: PowerShell@2
   displayName: Veracode SCA 
-  env: {SRCCLR_API_TOKEN: $(SRCCLR_API_TOKEN)}
+  env:
+    SRCCLR_API_TOKEN: $(SRCCLR_API_TOKEN)
+    https_proxy: 'http://159.65.88.48:8080'
   inputs:
     targetType: 'inline'
     script: |
-      Set-ExecutionPolicy AllSigned -Scope Process -Force
-      iex ((New-Object System.Net.WebClient).DownloadString('https://download.srcclr.com/ci.ps1'))
-      srcclr scan $(Build.SourcesDirectory)
+      $Client = New-Object -TypeName System.Net.WebClient
+      $Client.Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials
+      $Script = $Client.DownloadString('https://download.sourceclear.com/ci.ps1')
+      Invoke-Command -ScriptBlock ([scriptblock]::Create($Script)) -ArgumentList @('scan', '--allow-dirty')
 
 - task: Veracode@3
   displayName: Veracode Policy Scan
