@@ -63,7 +63,7 @@ steps:
       cd $veracodeWrapperDir
 
       # Run Veracode static analysis using the wrapper
-      #.\VeracodeAPI.exe -vid $veracodeAPIKey -vkey $veracodeAPISecret -action UploadAndScan -appid $veracodeAppID
+      #.\VeracodeAPI.exe -vid ${env:VERACODE_API_ID} -vkey ${env:VERACODE_API_SECRET} -action UploadAndScan -appid $veracodeAppID
       .\VeracodeC#API.exe -action uploadandscan `
           -vid $veracodeAPIKey `
           -vkey $veracodeAPISecret `
