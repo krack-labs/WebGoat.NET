@@ -70,16 +70,10 @@ steps:
           -appname "Webgoat AutoPackage" `
           -createprofile true `
           -criticality High `
-          -teams myteam `
-          #-sandboxname mysandbox `
-          #-createsandbox true `
           -version $(Build.BuildId) `
           -selectedpreviously true `
           -scantimeout 30 `
-          #-filepath ./verascan `
-          -filepath '$(build.artifactstagingdirectory)/bin.zip'
-          #-include *.exe `
-          #-exclude *.dll
+          -filepath '$(build.artifactstagingdirectory)/bin.zip
 
 
 
