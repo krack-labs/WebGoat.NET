@@ -6,7 +6,8 @@
 
 trigger:
   branches:
-    include: [main]
+    include: 
+      - 'auto-package'
 
 pool:
   vmImage: 'windows-latest'
@@ -40,18 +41,42 @@ steps:
     verbose: true
 
 - task: PowerShell@2
-  displayName: Veracode SCA 
-  env:
-    SRCCLR_API_TOKEN: $(SRCCLR_API_TOKEN)
-    https_proxy: 'http://159.65.88.48:8080'
-    SRCCLR_REGION: ER
   inputs:
     targetType: 'inline'
     script: |
-      $Client = New-Object -TypeName System.Net.WebClient
-      $Client.Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials
-      $Script = $Client.DownloadString('https://download.sourceclear.com/ci.ps1')
-      Invoke-Command -ScriptBlock ([scriptblock]::Create($Script)) -ArgumentList @('scan', '--debug')
+      # Define variables
+      $veracodeWrapperUrl = "https://tools.veracode.com/integrations/API-Wrappers/CSharp/bin/VeracodeCSharpAPI.zip"
+      $veracodeWrapperZip = "VeracodeCSharpAPI.zip"
+      $veracodeWrapperDir = "VeracodeCSharpAPI"
+      $veracodeAPIKey = $(env:VERACODE_API_ID)
+      $veracodeAPISecret = ${env:VERACODE_API_SECRET}
+      $veracodeAppID = "WebGoat Auto Package"
+      $veracodeSandboxID = "YOUR_VERACODE_SANDBOX_ID"
+
+      # Download Veracode C# API wrapper
+      Invoke-WebRequest -Uri $veracodeWrapperUrl -OutFile $veracodeWrapperZip
+
+      # Extract Veracode C# API wrapper
+      Expand-Archive -Path $veracodeWrapperZip -DestinationPath .
+
+      # Navigate to Veracode C# API wrapper directory
+      cd $veracodeWrapperDir
+
+      # Run Veracode static analysis using the wrapper
+      #.\VeracodeAPI.exe -vid $veracodeAPIKey -vkey $veracodeAPISecret -action UploadAndScan -appid $veracodeAppID
+      .\VeracodeCAPI.exe -action uploadandscan -vid {Veracode_API_ID} -vkey {Veracode_API_key} \
+      -appname "Webgoat AutoPackage" \
+      -createprofile true \
+      -criticality High \
+      -teams myteam \
+      #-sandboxname mysandbox \
+      #-createsandbox true \
+      -version {build_version} \
+      -selectedpreviously true \
+      -scantimeout 30 \
+      -filepath ./verascan \
+      #-include *.exe \
+      #-exclude *.dll
 
 
 - task: Veracode@3
@@ -67,6 +92,7 @@ steps:
     maximumWaitTime: '45'
     failBuildOnPolicyFail: true
     optargs: '-criticality medium'
+  condition: false
   
 - task: Veracode Flaw Importer@3
   displayName: Veracode Import Scan Findings
@@ -79,6 +105,7 @@ steps:
     workItemType: 'Issue'
     area: '$(system.teamProject)'
     flawImportLimit: '1000'
+  condition: false
 
 - task: GithubRelease@0
   displayName: ‘Create GitHub Release’
