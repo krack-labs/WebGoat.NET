@@ -41,9 +41,6 @@ steps:
     verbose: true
 
 - task: PowerShell@2
-  env: 
-    VERACODE_API_KEY: $(VERACODE_API_ID)
-    VERACODE_API_SECRET: $(VERACODE_API_SECRET)
   inputs:
     targetType: 'inline'
     script: |
@@ -64,10 +61,9 @@ steps:
       cd $veracodeWrapperDir
 
       # Run Veracode static analysis using the wrapper
-      #.\VeracodeAPI.exe -vid ${env:VERACODE_API_ID} -vkey ${env:VERACODE_API_SECRET} -action UploadAndScan -appid $veracodeAppID
       .\VeracodeC#API.exe -action uploadandscan `
-          -vid $VERACODE_API_KEY `
-          -vkey $VERACODE_API_SECRET `
+          -vid $(VERACODE_API_ID) `
+          -vkey $(VERACODE_API_KEY) `
           -appname "Webgoat AutoPackage" `
           -createprofile true `
           -criticality High `
