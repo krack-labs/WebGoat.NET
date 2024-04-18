@@ -64,7 +64,7 @@ steps:
 
       # Run Veracode static analysis using the wrapper
       #.\VeracodeAPI.exe -vid $veracodeAPIKey -vkey $veracodeAPISecret -action UploadAndScan -appid $veracodeAppID
-      .\VeracodeC#API.exe -action uploadandscan -vid {Veracode_API_ID} -vkey {Veracode_API_key} \
+      .\VeracodeC#API.exe -action uploadandscan -vid $veracodeAPIKey -vkey $veracodeAPISecret \
       -appname "Webgoat AutoPackage" \
       -createprofile true \
       -criticality High \
