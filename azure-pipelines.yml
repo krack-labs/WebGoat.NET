@@ -73,7 +73,7 @@ steps:
           -version $(Build.BuildId) `
           -selectedpreviously true `
           -scantimeout 30 `
-          -filepath '$(build.artifactstagingdirectory)/bin.zip
+          -filepath '$(build.artifactstagingdirectory)/bin.zip `
 
 
 
