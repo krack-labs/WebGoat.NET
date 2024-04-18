@@ -64,20 +64,23 @@ steps:
 
       # Run Veracode static analysis using the wrapper
       #.\VeracodeAPI.exe -vid $veracodeAPIKey -vkey $veracodeAPISecret -action UploadAndScan -appid $veracodeAppID
-      .\VeracodeC#API.exe -action uploadandscan -vid $veracodeAPIKey -vkey $veracodeAPISecret \
-      -appname "Webgoat AutoPackage" \
-      -createprofile true \
-      -criticality High \
-      -teams myteam \
-      #-sandboxname mysandbox \
-      #-createsandbox true \
-      -version {build_version} \
-      -selectedpreviously true \
-      -scantimeout 30 \
-      #-filepath ./verascan \
-      -filepath '$(build.artifactstagingdirectory)/bin.zip'
-      #-include *.exe \
-      #-exclude *.dll
+      .\VeracodeC#API.exe -action uploadandscan `
+          -vid $veracodeAPIKey `
+          -vkey $veracodeAPISecret `
+          -appname "Webgoat AutoPackage" `
+          -createprofile true `
+          -criticality High `
+          -teams myteam `
+          #-sandboxname mysandbox `
+          #-createsandbox true `
+          -version {build_version} `
+          -selectedpreviously true `
+          -scantimeout 30 `
+          #-filepath ./verascan `
+          -filepath '$(build.artifactstagingdirectory)/bin.zip'
+          #-include *.exe `
+          #-exclude *.dll
+
 
 
 - task: Veracode@3
