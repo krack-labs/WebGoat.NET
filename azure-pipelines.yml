@@ -48,7 +48,7 @@ steps:
       $veracodeWrapperUrl = "https://tools.veracode.com/integrations/API-Wrappers/CSharp/bin/VeracodeCSharpAPI.zip"
       $veracodeWrapperZip = "VeracodeCSharpAPI.zip"
       $veracodeWrapperDir = "VeracodeCSharpAPI"
-      $veracodeAPIKey = $(env:VERACODE_API_ID)
+      $veracodeAPIKey = ${env:VERACODE_API_ID}
       $veracodeAPISecret = ${env:VERACODE_API_SECRET}
       $veracodeAppID = "WebGoat Auto Package"
       $veracodeSandboxID = "YOUR_VERACODE_SANDBOX_ID"
