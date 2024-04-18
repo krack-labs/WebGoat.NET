@@ -64,7 +64,7 @@ steps:
       .\VeracodeC#API.exe -action uploadandscan `
           -vid $(VERACODE_API_ID) `
           -vkey $(VERACODE_API_KEY) `
-          -appname "Webgoat AutoPackage" `
+          -appname 'Webgoat AutoPackage' `
           -createprofile true `
           -criticality High `
           -version $(Build.BuildId) `
