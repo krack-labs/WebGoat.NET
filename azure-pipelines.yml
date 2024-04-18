@@ -57,7 +57,7 @@ steps:
       Invoke-WebRequest -Uri $veracodeWrapperUrl -OutFile $veracodeWrapperZip
 
       # Extract Veracode C# API wrapper
-      Expand-Archive -Path $veracodeWrapperZip -DestinationPath .
+      Expand-Archive -Path $veracodeWrapperZip -DestinationPath $veracodeWrapperDir
 
       # Navigate to Veracode C# API wrapper directory
       cd $veracodeWrapperDir
