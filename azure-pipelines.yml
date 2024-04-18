@@ -73,7 +73,7 @@ steps:
           -teams myteam `
           #-sandboxname mysandbox `
           #-createsandbox true `
-          -version {build_version} `
+          -version $(Build.BuildId) `
           -selectedpreviously true `
           -scantimeout 30 `
           #-filepath ./verascan `
