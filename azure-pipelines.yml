@@ -39,8 +39,30 @@ steps:
     archiveFile: '$(Build.ArtifactStagingDirectory)/bin.zip'
     replaceExistingArchive: true
     verbose: true
+  condition: false
 
 - task: PowerShell@2
+  displayName: Veracode Package
+  env:
+    VERACODE_API_KEY_ID: $(VERACODE_API_ID)
+    VERACODE_API_KEY_SECRET: $(VERACODE_API_KEY)
+  inputs:
+    targetType: 'inline'
+    script: |
+      $veracodeWrapperUrl = "https://tools.veracode.com/veracode-cli/install.ps1"
+
+      # Enable Powershell to run scripts
+      Set-ExecutionPolicy AllSigned -Scope Process -Force
+
+      # Download the Veracode CLI
+      $ProgressPreference = "silentlyContinue"; iex ((New-Object System.Net.WebClient).DownloadString($veracodeWrapperUrl))
+
+      # Run autopackage, placing files in verascan
+      veracode package --source ./WebGoat --output verascan --trust
+
+
+- task: PowerShell@2
+  displayName: Veracode Policy Scan
   inputs:
     targetType: 'inline'
     script: |
@@ -70,7 +92,7 @@ steps:
           -version $(Build.BuildId) `
           -selectedpreviously true `
           -scantimeout 30 `
-          -filepath '$(build.artifactstagingdirectory)/bin.zip'
+          -filepath 'verascan'
 
 
 
