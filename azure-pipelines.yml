@@ -58,7 +58,7 @@ steps:
       $ProgressPreference = "silentlyContinue"; iex ((New-Object System.Net.WebClient).DownloadString($veracodeWrapperUrl))
 
       # Run autopackage, placing files in verascan
-      veracode package --source ./WebGoat --output verascan --trust
+      veracode package --source ./ --output ./verascan --trust
 
 
 - task: PowerShell@2
