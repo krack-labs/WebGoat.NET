@@ -50,19 +50,38 @@ steps:
       srcclr scan $(Build.SourcesDirectory)
 
 
-- task: Veracode@3
+- task: PowerShell@2
   displayName: Veracode Policy Scan
   inputs:
-    ConnectionDetailsSelection: 'Endpoint'
-    AnalysisService: 'veracode_scan'
-    veracodeAppProfile: 'WebGoat.new'
-    version: '$(Build.BuildId)'
-    filepath: '$(build.artifactstagingdirectory)/bin.zip'
-    createProfile: true
-    importResults: true
-    maximumWaitTime: '45'
-    failBuildOnPolicyFail: true
-    optargs: '-criticality medium'
+    targetType: 'inline'
+    script: |
+      # Define variables
+      $veracodeWrapperUrl = "https://tools.veracode.com/integrations/API-Wrappers/CSharp/bin/VeracodeCSharpAPI.zip"
+      $veracodeWrapperZip = "VeracodeCSharpAPI.zip"
+      $veracodeWrapperDir = "VeracodeCSharpAPI"
+      $veracodeAppID = "WebGoat Auto Package"
+      $veracodeSandboxID = "YOUR_VERACODE_SANDBOX_ID"
+
+      # Download Veracode C# API wrapper
+      Invoke-WebRequest -Uri $veracodeWrapperUrl -OutFile $veracodeWrapperZip
+
+      # Extract Veracode C# API wrapper
+      Expand-Archive -Path $veracodeWrapperZip -DestinationPath $veracodeWrapperDir
+
+      # Navigate to Veracode C# API wrapper directory
+      cd $veracodeWrapperDir
+
+      # Run Veracode static analysis using the wrapper
+      .\VeracodeC#API.exe -action uploadandscan `
+          -vid $(VERACODE_API_ID) `
+          -vkey $(VERACODE_API_KEY) `
+          -appname 'Webgoat AutoPackage' `
+          -createprofile true `
+          -criticality High `
+          -version $(Build.BuildId) `
+          -selectedpreviously true `
+          -scantimeout 30 `
+          -filepath 'verascan'
   
 - task: Veracode Flaw Importer@3
   displayName: Veracode Import Scan Findings
