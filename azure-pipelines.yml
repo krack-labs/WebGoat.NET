@@ -39,3 +39,5 @@ steps:
     archiveFile: '$(Build.ArtifactStagingDirectory)/bin.zip'
     replaceExistingArchive: true
     verbose: true
+
+- task: VeracodeScanning@0
