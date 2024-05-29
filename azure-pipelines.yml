@@ -6,7 +6,7 @@
 
 trigger:
   branches:
-    include: [main]
+    include: [azure-integration]
 
 pool:
   vmImage: 'windows-latest'
@@ -15,6 +15,7 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Debug'
+  group: VeracodeScanning
 
 steps:
 - task: NuGetToolInstaller@1
@@ -38,56 +39,3 @@ steps:
     archiveFile: '$(Build.ArtifactStagingDirectory)/bin.zip'
     replaceExistingArchive: true
     verbose: true
-
-- task: PowerShell@2
-  displayName: Veracode SCA 
-  env: {SRCCLR_API_TOKEN: $(SRCCLR_API_TOKEN)}
-  inputs:
-    targetType: 'inline'
-    script: |
-      Set-ExecutionPolicy AllSigned -Scope Process -Force
-      iex ((New-Object System.Net.WebClient).DownloadString('https://download.srcclr.com/ci.ps1'))
-      srcclr scan $(Build.SourcesDirectory)
-
-
-- task: Veracode@3
-  displayName: Veracode Policy Scan
-  inputs:
-    ConnectionDetailsSelection: 'Endpoint'
-    AnalysisService: 'veracode_scan'
-    veracodeAppProfile: 'WebGoat.new'
-    version: '$(Build.BuildId)'
-    filepath: '$(build.artifactstagingdirectory)/bin.zip'
-    createProfile: true
-    importResults: true
-    maximumWaitTime: '45'
-    failBuildOnPolicyFail: true
-    optargs: '-criticality medium'
-  
-- task: Veracode Flaw Importer@3
-  displayName: Veracode Import Scan Findings
-  inputs:
-    ConnectionDetailsSelection: 'Endpoint'
-    AnalysisService: 'veracode_scan'
-    veracodeAppProfile: 'WebGoat.net'
-    sandboxName: 
-    importType: 'All Unmitigated Flaws Violating Policy'
-    workItemType: 'Issue'
-    area: '$(system.teamProject)'
-    flawImportLimit: '1000'
-
-- task: GithubRelease@0
-  displayName: ‘Create GitHub Release’
-  inputs:
-    githubConnection: wasptree
-    repositoryName: wasptree/WebGoat.NET
-    action: 'create'
-    tagSource: 'manual'
-    tag: '$(Build.BuildNumber)'
-    assets: '$(Build.ArtifactStagingDirectory)\bin.zip'
-    assetUploadMode: delete
-
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
