@@ -53,7 +53,7 @@ steps:
   inputs:
     ConnectionDetailsSelection: 'Service Connection'
     AnalysisService: 'veracode_scan'
-    veracodeAppProfile: '$(system.teamProject)'
+    veracodeAppProfile: 'WebGoat.net'
     version: '$(build.buildNumber)'
     filepath: '$(build.artifactstagingdirectory)/bin.zip'
     maximumWaitTime: '360'
