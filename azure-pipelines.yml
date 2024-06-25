@@ -39,15 +39,15 @@ steps:
     replaceExistingArchive: true
     verbose: true
 
-#- task: PowerShell@2
-#  displayName: Veracode SCA 
-#  env: {SRCCLR_API_TOKEN: $(SRCCLR_API_TOKEN)}
-#  inputs:
-#    targetType: 'inline'
-#    script: |
-#      Set-ExecutionPolicy AllSigned -Scope Process -Force
-#      iex ((New-Object System.Net.WebClient).DownloadString('https://download.srcclr.com/ci.ps1'))
-#      srcclr scan $(Build.SourcesDirectory)
+- task: PowerShell@2
+  displayName: Veracode SCA 
+  env: {SRCCLR_API_TOKEN: $(SRCCLR_API_TOKEN)}
+  inputs:
+    targetType: 'inline'
+    script: |
+      Set-ExecutionPolicy AllSigned -Scope Process -Force
+      iex ((New-Object System.Net.WebClient).DownloadString('https://download.srcclr.com/ci.ps1'))
+      srcclr scan $(Build.SourcesDirectory)
 
 - task: Veracode@3
   inputs:
