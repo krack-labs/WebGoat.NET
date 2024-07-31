@@ -54,9 +54,11 @@ steps:
     ConnectionDetailsSelection: 'Service Connection'
     AnalysisService: 'veracode_scan'
     veracodeAppProfile: 'WebGoat.net'
+    createProfile: true
     version: '$(build.buildNumber)'
     filepath: '$(build.artifactstagingdirectory)/bin.zip'
-    maximumWaitTime: '360'
+    importResults: true
+    maximumWaitTime: '45'
   
 #- task: Veracode Flaw Importer@3
 #  displayName: Veracode Import Scan Findings
