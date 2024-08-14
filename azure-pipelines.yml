@@ -7,7 +7,7 @@
 trigger:
   branches:
     include: 
-      - 'auto-package'
+      - 'auto-package-veracode-task'
 
 pool:
   vmImage: 'windows-latest'
@@ -24,77 +24,18 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-  condition: false
-
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: '$(Build.SourcesDirectory)/WebGoat/bin'
-    IncludeRootFolder: true
-    archiveType: zip
-    archiveFile: '$(Build.ArtifactStagingDirectory)/bin.zip'
-    replaceExistingArchive: true
-    verbose: true
-  condition: false
-
 - task: PowerShell@2
   displayName: Veracode Package
-  env:
-    VERACODE_API_KEY_ID: $(VERACODE_API_ID)
-    VERACODE_API_KEY_SECRET: $(VERACODE_API_KEY)
   inputs:
     targetType: 'inline'
     script: |
       $veracodeWrapperUrl = "https://tools.veracode.com/veracode-cli/install.ps1"
-
       # Enable Powershell to run scripts
       Set-ExecutionPolicy AllSigned -Scope Process -Force
-
       # Download the Veracode CLI
       $ProgressPreference = "silentlyContinue"; iex ((New-Object System.Net.WebClient).DownloadString($veracodeWrapperUrl))
-
       # Run autopackage, placing files in verascan
-      veracode package --source ./ --output ./verascan --trust
-
-
-- task: PowerShell@2
-  displayName: Veracode Policy Scan
-  inputs:
-    targetType: 'inline'
-    script: |
-      # Define variables
-      $veracodeWrapperUrl = "https://tools.veracode.com/integrations/API-Wrappers/CSharp/bin/VeracodeCSharpAPI.zip"
-      $veracodeWrapperZip = "VeracodeCSharpAPI.zip"
-      $veracodeWrapperDir = "VeracodeCSharpAPI"
-      $veracodeAppID = "WebGoat Auto Package"
-      $veracodeSandboxID = "YOUR_VERACODE_SANDBOX_ID"
-
-      # Download Veracode C# API wrapper
-      Invoke-WebRequest -Uri $veracodeWrapperUrl -OutFile $veracodeWrapperZip
-
-      # Extract Veracode C# API wrapper
-      Expand-Archive -Path $veracodeWrapperZip -DestinationPath $veracodeWrapperDir
-
-      # Navigate to Veracode C# API wrapper directory
-      cd $veracodeWrapperDir
-
-      # Run Veracode static analysis using the wrapper
-      .\VeracodeC#API.exe -action uploadandscan `
-          -vid $(VERACODE_API_ID) `
-          -vkey $(VERACODE_API_KEY) `
-          -appname 'Webgoat AutoPackage' `
-          -createprofile true `
-          -criticality High `
-          -version $(Build.BuildId) `
-          -selectedpreviously true `
-          -scantimeout 30 `
-          -filepath 'verascan'
-
+      veracode package --source ./ --output $(build.artifactstagingdirectory)/verascan --trust
 
 
 - task: Veracode@3
@@ -102,41 +43,12 @@ steps:
   inputs:
     ConnectionDetailsSelection: 'Endpoint'
     AnalysisService: 'veracode_scan'
-    veracodeAppProfile: 'WebGoat.new'
-    version: '$(Build.BuildId)'
-    filepath: '$(build.artifactstagingdirectory)/bin.zip'
+    veracodeAppProfile: '${Build.Repository.Name}'
+    version: '$(Build.BuildNumber)'
+    filepath: '$(build.artifactstagingdirectory)/verascan'
     createProfile: true
-    importResults: true
-    maximumWaitTime: '45'
-    failBuildOnPolicyFail: true
-    optargs: '-criticality medium'
-  condition: false
+    importResults: false
+    #maximumWaitTime: '45'
+    #failBuildOnPolicyFail: true
+    optargs: '-criticality high -deleteincompletescan 2'
   
-- task: Veracode Flaw Importer@3
-  displayName: Veracode Import Scan Findings
-  inputs:
-    ConnectionDetailsSelection: 'Endpoint'
-    AnalysisService: 'veracode_scan'
-    veracodeAppProfile: 'WebGoat.net'
-    sandboxName: 
-    importType: 'All Unmitigated Flaws Violating Policy'
-    workItemType: 'Issue'
-    area: '$(system.teamProject)'
-    flawImportLimit: '1000'
-  condition: false
-
-- task: GithubRelease@0
-  displayName: ‘Create GitHub Release’
-  inputs:
-    githubConnection: wasptree
-    repositoryName: wasptree/WebGoat.NET
-    action: 'create'
-    tagSource: 'manual'
-    tag: '$(Build.BuildNumber)'
-    assets: '$(Build.ArtifactStagingDirectory)\bin.zip'
-    assetUploadMode: delete
-
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
